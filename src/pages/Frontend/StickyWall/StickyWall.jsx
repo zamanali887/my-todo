@@ -16,6 +16,7 @@ export default function Stickywall() {
     const [users, setUsers] = useState([])
     const [userData, setUserData] = useState([])
     const [getTodo, setGetTodo] = useState([])
+    const [getList, setGetList] = useState([])
 
 
 
@@ -65,6 +66,21 @@ export default function Stickywall() {
     }
     useEffect(() => {
         showTodo();
+    }, [])
+
+
+    const showList = async () => {
+        const querySnapshot = await getDocs(collection(firestore, "list"));
+
+        const docArray = []
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            docArray.push(data)
+        });
+        setGetList(docArray)
+    }
+    useEffect(() => {
+        showList();
     }, [])
 
 
@@ -121,7 +137,7 @@ export default function Stickywall() {
                     {
                         getTodo.map((todo) => {
                             return (
-                                <div className="col col-md-4 " style={{ height: "40vh" }}>
+                                <div className="col-12 col-md-4 " style={{ height: "40vh" }}>
                                     <div className="row">
                                         <div className="col m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
                                             <div className="row mt-3">
@@ -172,7 +188,8 @@ export default function Stickywall() {
 
                                 <div className="row">
                                     <div className="col">
-                                        <input type="text" className='form-control' name='title' value={state.title} placeholder='Todo Title' onChange={handleChange} required />
+                                        <input type="text" className='form-control' name='title' value={state.title} onChange={handleChange} placeholder='please Enter Todo Title' required />
+
                                     </div>
                                 </div>
                                 <div className="row mt-2">
@@ -181,7 +198,15 @@ export default function Stickywall() {
                                     </div>
 
                                     <div className="col px-0">
-                                        <input type="text" className='form-control' name='list' value={state.list} onChange={handleChange} required />
+                                        <select class="form-select form-select-md mb-3" aria-label=".form-select-lg example">
+                                            {
+                                                getList.map((list, i) => {
+                                                    return (
+                                                        <option >{list.listItem}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
                                     </div>
 
                                     <div className="col d-flex justify-content-center px-0">

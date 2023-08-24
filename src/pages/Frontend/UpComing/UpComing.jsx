@@ -1,31 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { firestore } from 'config/firebase';
-import { collection, getDocs } from 'firebase/firestore'
+import { useFetchTodoContext } from 'contexts/FetchTodoContext';
 
 
-// import { AiOutlinePlus } from "react-icons/ai"
 
 
 
 export default function UpComing() {
 
-    const [getTodo, setGetTodo] = useState([]);
     const [selectedDate, setSelectedDate] = useState("")
-
-
-    const showTodo = async () => {
-        const querySnapshot = await getDocs(collection(firestore, "todos"));
-
-        const docArray = []
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            docArray.push(data)
-        });
-        setGetTodo(docArray)
-    }
-    useEffect(() => {
-        showTodo();
-    }, []);
+    const { getTodos } = useFetchTodoContext();
 
 
     useEffect(() => {
@@ -34,7 +17,7 @@ export default function UpComing() {
         setSelectedDate(formattedDate);
     }, []);
 
-    const upComingTodos = getTodo.filter((todo) => todo.date > selectedDate);
+    const upComingTodos = getTodos.filter((todo) => todo.date > selectedDate);
 
 
 
@@ -50,7 +33,7 @@ export default function UpComing() {
                     {
                         upComingTodos.map((todo) => {
                             return (
-                                <div className="col col-md-4 " style={{ height: "40vh" }}>
+                                <div className="col-12 col-md-4 " style={{ height: "40vh" }}>
                                     <div className="row">
                                         <div className="col m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
                                             <div className="row mt-3">
@@ -81,10 +64,6 @@ export default function UpComing() {
                         })
 
                     }
-
-                    {/* <div className='col col-md-4 px-0 mt-2 bg-light d-flex justify-content-center align-items-center rounded-4' style={{ height: "40vh" }}>
-                        <button className='btn w-100 h-100 btn-outline-light' type='button' data-bs-toggle="modal" data-bs-target="#exampleModal"> <span className='text-dark'> <AiOutlinePlus size={40} /></span> </button>
-                    </div> */}
                 </div>
             </div>
         </>

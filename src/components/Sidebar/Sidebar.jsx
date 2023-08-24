@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore'
-import { firestore } from 'config/firebase'
+import { auth, firestore } from 'config/firebase'
 import { message } from 'antd'
 
 
@@ -11,9 +11,11 @@ import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md'
 import { TfiMenuAlt } from 'react-icons/tfi'
 import { BsCalendar2Month } from 'react-icons/bs'
 import { MdStickyNote2 } from 'react-icons/md'
-import { MdLogout } from 'react-icons/md'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { BiSolidCheckbox } from 'react-icons/bi'
+import { BiLogOut } from 'react-icons/bi'
+import { signOut } from 'firebase/auth'
+import { useAuthContext } from 'contexts/AuthContext'
 
 
 const initialValue = { listItem: "", color: '' }
@@ -24,13 +26,15 @@ export default function Sidebar() {
   const [state, setState] = useState(initialValue);
   const [getList, setGetList] = useState([]);
   const [hideList, setHideList] = useState('');
+  const { dispatch } = useAuthContext()
+  // const navigate = useNavigate()
   // const [randomColors, setRandomColors] = useState('')
 
 
 
   const handleChange = e => setState(s => ({ ...s, [e.target.name]: e.target.value }))
 
-  const hideListForm =()=>{
+  const hideListForm = () => {
     setHideList(current => !current);
   }
 
@@ -66,9 +70,9 @@ export default function Sidebar() {
     setGetList(docArray)
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     showList()
-  },[])
+  }, [])
   //****End*****//
 
 
@@ -100,7 +104,16 @@ export default function Sidebar() {
   }
 
   //*****End*****//
-
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        message.success("Signout successful")
+        dispatch({ type: "SET_LOGGED_OUT" })
+      })
+      .catch(err => {
+        message.error("Signout not successful")
+      })
+  }
 
 
   return (
@@ -148,16 +161,16 @@ export default function Sidebar() {
                       return (
                         <>
                           <li className="nav-item text-dark mb-1 ">
-                            <Link to="/" className="nav-link text-dark  text-decoration-none py-1">
-                              <BiSolidCheckbox size={22} style={{color:list.color}} />
-                              <span className='d-none d-sm-inline ms-2' style={{textTransform:'capitalize'}}>{list.listItem}</span>
+                            <Link to={`/list/${list.listItem}`} className="nav-link text-dark  text-decoration-none py-1">
+                              <BiSolidCheckbox size={22} style={{ color: list.color }} />
+                              <span className='d-none d-sm-inline ms-2' style={{ textTransform: 'capitalize' }}>{list.listItem}</span>
                             </Link>
                           </li>
                         </>
                       )
                     })
                   }
-                  <li className="nav-item text-dark mb-3"  onClick={()=>hideListForm()} >
+                  <li className="nav-item text-dark mb-3" onClick={() => hideListForm()} >
                     <div className="nav-link text-dark  text-decoration-none py-1">
                       <AiOutlinePlus size={18} />
                       <span className='d-none d-sm-inline ms-2' >Add New List</span>
@@ -165,7 +178,7 @@ export default function Sidebar() {
                   </li>
                 </ul>
 
-                <form onSubmit={handleSubmit} className={`${hideList ? "d-block" :'d-none'} `} >
+                <form onSubmit={handleSubmit} className={`${hideList ? "d-block" : 'd-none'} `} >
                   <div className="row mx-0">
                     <div className="col-12 col-md-9 col-xl-10 px-0 px-md-1">
                       <input className='form-control form-control-sm rounded-2' type="text" name='listItem' placeholder='New List Name' value={state.listItem} onChange={handleChange} />
@@ -184,8 +197,9 @@ export default function Sidebar() {
 
               </div>
               <div className='mb-3 px-2'>
-                <button className='btn px-2'><Link to="/auth/login" className='text-decoration-none'>
-                  <span className='d-none d-sm-inline'> <MdLogout size={18} /> Logout</span></Link></button>
+                <button className='btn px-2'><Link to="/auth/login" className='text-decoration-none'onClick={handleLogout}>
+                <BiLogOut size={20}/>
+                  <span className='d-none d-sm-inline'>  Logout</span></Link></button>
               </div>
             </div>
           </div>

@@ -1,37 +1,49 @@
+import { firestore } from 'config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import { useFetchTodoContext } from 'contexts/FetchTodoContext';
+import { useParams } from 'react-router-dom';
+
+export default function ListedTodo() {
+
+
+    const [ListedTodo, setListedTodo] = useState([])
+    const param = useParams()
 
 
 
+    const showUserdata = async () => {
+        const querySnapshot = await getDocs(collection(firestore, "todos"));
 
-export default function Today() {
-
-    const [selectedDate, setSelectedDate] = useState("");
-    const { getTodos } = useFetchTodoContext();
-
-
+        const docArray = []
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            docArray.push(data)
+        });
+        setListedTodo(docArray)
+    }
     useEffect(() => {
-        const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().slice(0, 10);
-        setSelectedDate(formattedDate);
-    }, []);
+        showUserdata();
+    }, [])
 
-    const TodayTodos = getTodos.filter((todo) => todo.date === selectedDate);
+    const filterTodo = ListedTodo.filter((todo) => todo.list === param.list)
+
+    console.log('param', param)
+    console.log('filterTodo', filterTodo)
+
 
 
     return (
-        <>
-            <div className="container vh-100">
-                <div className="row px-0">
-                    <div className="col px-0">
-                        <h1>Today</h1>
-                    </div>
-                </div>
-                <div className="row mt-4 px-0">
-                    {
-                        TodayTodos.map((todo) => {
-                            return (
-                                <div className="col-12 col-md-4 " style={{ height: "40vh" }}>
+        <div className="container vh-100">
+            <h1>
+                {param.list}
+            </h1>
+            <div className="row">
+                {
+                    filterTodo.map((todo) => {
+                        return (
+                            <>
+                                {/* <div className="row"><h1>{ todo.list }</h1></div> */}
+                                <div className="col col-md-4 " style={{ height: "40vh" }}>
                                     <div className="row">
                                         <div className="col m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
                                             <div className="row mt-3">
@@ -58,12 +70,11 @@ export default function Today() {
                                     </div>
 
                                 </div>
-                            )
-                        })
-
-                    }
-                </div>
+                            </>
+                        )
+                    })
+                }
             </div>
-        </>
+        </div>
     )
 }
