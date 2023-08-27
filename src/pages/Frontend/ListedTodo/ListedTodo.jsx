@@ -1,71 +1,50 @@
-import { firestore } from 'config/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+
+import { useFetchTodoContext } from 'contexts/FetchTodoContext';
 import { useParams } from 'react-router-dom';
+import { message } from 'antd';
 
 export default function ListedTodo() {
 
 
-    const [ListedTodo, setListedTodo] = useState([])
+    const { getTodos } = useFetchTodoContext();
     const param = useParams()
-
-
-
-    const showUserdata = async () => {
-        const querySnapshot = await getDocs(collection(firestore, "todos"));
-
-        const docArray = []
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            docArray.push(data)
-        });
-        setListedTodo(docArray)
+    const filterTodo = getTodos.filter((todo) => todo.newlist.id === param.id);
+    const findTodo = getTodos.find((todo) => todo.newlist.id === param.id);
+    if(!findTodo){
+        return message.error("Todos not found on this list item!")
     }
-    useEffect(() => {
-        showUserdata();
-    }, [])
-
-    const filterTodo = ListedTodo.filter((todo) => todo.list === param.list)
-
-    console.log('param', param)
-    console.log('filterTodo', filterTodo)
-
-
 
     return (
         <div className="container vh-100">
-            <h1>
-                {param.list}
+            <h1 style={{textTransform:"capitalize"}}>
+                {findTodo? findTodo.newlist.name : ""}
             </h1>
             <div className="row">
                 {
                     filterTodo.map((todo) => {
                         return (
                             <>
-                                {/* <div className="row"><h1>{ todo.list }</h1></div> */}
-                                <div className="col col-md-4 " style={{ height: "40vh" }}>
+                                <div className="col-12 col-md-6 col-lg-4" style={{ height: "40vh" }}>
                                     <div className="row">
-                                        <div className="col m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
+                                        <div className="col d-flex justify-content-between flex-column m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
                                             <div className="row mt-3">
                                                 <div className="col">
                                                     <h4> {todo.title} </h4>
                                                 </div>
-                                                <div className="col text-end">
-                                                    <div class="dropdown">
-                                                        <button class="btn dropdown-toggle btn-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            {/* <BsThreeDotsVertical /> */}
-                                                        </button>
-                                                        <ul class="dropdown-menu dropdown-menu-light ps-2 border-light">
-                                                            <li>Update</li>
-                                                            <li>Delelte</li>
-                                                        </ul>
-                                                    </div>
+                                                <div className="rpw text-end">
+
+                                                    <p className='mt-2' style={{ textAlign: 'justify' }}>
+                                                        {todo.description}
+                                                    </p>
 
                                                 </div>
                                             </div>
-                                            <p className='mt-2' style={{ textAlign: 'justify' }}>
-                                                {todo.description}
-                                            </p>
+                                            <div className='row'>
+                                                <div className="col mb-1 text-center fw-bold">
+                                                    {todo.date}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

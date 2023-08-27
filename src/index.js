@@ -5,6 +5,8 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import AuthContextProvider from 'contexts/AuthContext';
 import FetchTodoContextProvider from 'contexts/FetchTodoContext';
+import FetchTodoListProvider from 'contexts/FetchTodoList';
+import FetchDeletedTodoProvider from 'contexts/FetchDeletedTodo';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -12,7 +14,12 @@ root.render(
     <BrowserRouter>
       <AuthContextProvider>
         <FetchTodoContextProvider>
-          <App />
+          <FetchTodoListProvider>
+            <FetchDeletedTodoProvider>
+
+            <App />
+            </FetchDeletedTodoProvider>
+          </FetchTodoListProvider>
         </FetchTodoContextProvider>
       </AuthContextProvider>
     </BrowserRouter>

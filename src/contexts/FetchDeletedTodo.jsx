@@ -2,34 +2,34 @@ import { firestore } from 'config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-const FetchTodoContext = createContext();
+const FetchDeletedTodo = createContext();
 
-export default function FetchTodoContextProvider({ children }) {
+export default function FetchDeletedTodoProvider({ children }) {
 
-    const [getTodos, setGetTodos] = useState([]);
+    const [deletedTodos, setDeleltedTodos] = useState([]);
 
     const showTodo = async () => {
 
 
-        const q = query(collection(firestore, "todos"), where("status", "==", 'active'));
+        const q = query(collection(firestore, "todos"), where("status", "==", 'inActive'));
 
         const docArray = []
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             docArray.push(data)
-            setGetTodos(docArray)
+            setDeleltedTodos(docArray)
         });
     }
     useEffect(() => {
         showTodo();
     }, []);
-
+    console.log('deletedTodos', deletedTodos)
     return (
-        <FetchTodoContext.Provider value={{ getTodos,setGetTodos }}>
+        <FetchDeletedTodo.Provider value={{ deletedTodos,setDeleltedTodos }}>
             {children}
-        </FetchTodoContext.Provider>
+        </FetchDeletedTodo.Provider>
     )
 }
 
-export const useFetchTodoContext = () => useContext(FetchTodoContext)
+export const useFetchDeletedTodo = () => useContext(FetchDeletedTodo)

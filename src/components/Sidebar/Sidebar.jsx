@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 
-import { collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore'
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, firestore } from 'config/firebase'
 import { message } from 'antd'
 
@@ -14,8 +13,14 @@ import { MdStickyNote2 } from 'react-icons/md'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { BiSolidCheckbox } from 'react-icons/bi'
 import { BiLogOut } from 'react-icons/bi'
+import { AiFillDelete } from 'react-icons/ai'
+
+
 import { signOut } from 'firebase/auth'
 import { useAuthContext } from 'contexts/AuthContext'
+import { useFetchTodoList } from 'contexts/FetchTodoList'
+import { Link } from 'react-router-dom'
+import { Button } from 'antd'
 
 
 const initialValue = { listItem: "", color: '' }
@@ -24,12 +29,10 @@ export default function Sidebar() {
 
 
   const [state, setState] = useState(initialValue);
-  const [getList, setGetList] = useState([]);
   const [hideList, setHideList] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { dispatch } = useAuthContext()
-  // const navigate = useNavigate()
-  // const [randomColors, setRandomColors] = useState('')
-
+  const { getList } = useFetchTodoList();
 
 
   const handleChange = e => setState(s => ({ ...s, [e.target.name]: e.target.value }))
@@ -38,42 +41,6 @@ export default function Sidebar() {
     setHideList(current => !current);
   }
 
-  // Function to genrate Random Color
-
-  // const generateRandomColor = () => {
-  //   const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  //   setRandomColors(randomColor);
-  // };
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     generateRandomColor();
-  //     console.log('This will run every second!');
-  //   }, 3000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-
-  // *****End*****//
-
-  //Getting Data of List Items//
-
-  const showList = async () => {
-
-    const querySnapshot = await getDocs(collection(firestore, "list"));
-
-    const docArray = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data()
-      docArray.push(data)
-    })
-    setGetList(docArray)
-  }
-
-  useEffect(() => {
-    showList()
-  }, [])
-  //****End*****//
 
 
   // function to add new list
@@ -92,15 +59,18 @@ export default function Sidebar() {
       color,
       status: "active",
     }
+    setIsLoading(true)
     try {
+
       await setDoc(doc(firestore, 'list', data.id), data);
       message.success("New List Added SuccessFuly");
-      showList();
+      getList.push(data)
       setState(initialValue);
     }
     catch (e) {
       message.error("Something Went Wrong While Adding New List")
     }
+    setIsLoading(false)
   }
 
   //*****End*****//
@@ -161,7 +131,7 @@ export default function Sidebar() {
                       return (
                         <>
                           <li className="nav-item text-dark mb-1 ">
-                            <Link to={`/list/${list.listItem}`} className="nav-link text-dark  text-decoration-none py-1">
+                            <Link to={`/list/${list.id}`} className="nav-link text-dark  text-decoration-none py-1">
                               <BiSolidCheckbox size={22} style={{ color: list.color }} />
                               <span className='d-none d-sm-inline ms-2' style={{ textTransform: 'capitalize' }}>{list.listItem}</span>
                             </Link>
@@ -189,17 +159,32 @@ export default function Sidebar() {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-12  text-end">
-                      <button className='btn mt-2 mx-1 w-100' type='submit' style={{ background: "#e9ecef" }}>Add</button>
+                    <div className="col-12 mt-2 mx-1  text-end">
+                      <Button htmlType='submit' type='light' className='btn w-100' loading={isLoading} style={{ background: "#e9ecef" }}>Add</Button>
                     </div>
                   </div>
                 </form>
+                <h6 className='mt-3 px-2' >Recently Deleted</h6>
+                <ul className="nav nav-pills flex-column px-1" >
+                  <li className="nav-item text-dark mb-3 ">
+                    <Link to="/deleted" className="nav-link text-dark  text-decoration-none py-1">
+                      <AiFillDelete size={18} />
+                      <span className='d-none d-sm-inline ms-2'>Recycle Bin</span>
+                    </Link>
+                  </li>
 
+                </ul>
               </div>
-              <div className='mb-3 px-2'>
-                <button className='btn px-2'><Link to="/auth/login" className='text-decoration-none'onClick={handleLogout}>
-                <BiLogOut size={20}/>
-                  <span className='d-none d-sm-inline'>  Logout</span></Link></button>
+              <div>
+                <div className='row mb-3 px-2'>
+                  <div className="col-12 text-center">
+                    <button className='btn px-2 w-100' style={{ background: "#e9ecef" }} onClick={handleLogout}><Link to="/auth/login" className='text-decoration-none'>
+                      <BiLogOut size={20} />
+                      <span className='d-none d-sm-inline'>  Logout</span></Link></button>
+
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>

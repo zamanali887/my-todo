@@ -45,10 +45,27 @@ export default function Login() {
               <Divider />
 
               <Form layout="vertical">
-                <Form.Item label="Email">
+                <Form.Item label="Email" name="email" hasFeedback
+                  rules={[
+                    {
+                      type: 'email',
+                      message: 'The input is not valid E-mail !',
+                    },
+                    {
+                      required: true,
+                      message: 'Please input your E-mail !',
+                    },
+                  ]}>
                   <Input placeholder='Input your email' name='email' onChange={handleChange} />
                 </Form.Item>
-                <Form.Item label="Password">
+                <Form.Item label="Password" name="password" hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input your Password!',
+                    },
+                  ]}
+                >
                   <Input.Password placeholder='Input your password' name='password' onChange={handleChange} />
                 </Form.Item>
 

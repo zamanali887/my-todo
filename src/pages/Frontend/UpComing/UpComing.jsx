@@ -19,8 +19,6 @@ export default function UpComing() {
 
     const upComingTodos = getTodos.filter((todo) => todo.date > selectedDate);
 
-
-
     return (
         <>
             <div className="container vh-100">
@@ -33,29 +31,26 @@ export default function UpComing() {
                     {
                         upComingTodos.map((todo) => {
                             return (
-                                <div className="col-12 col-md-4 " style={{ height: "40vh" }}>
+                                <div className="col-12 col-md-6 col-lg-4" style={{ height: "40vh" }}>
                                     <div className="row">
-                                        <div className="col m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
+                                        <div className="col d-flex justify-content-between flex-column m-2 rounded-4 overflow-scroll abc" style={{ background: todo.color, height: "38vh" }}>
                                             <div className="row mt-3">
                                                 <div className="col">
                                                     <h4> {todo.title} </h4>
                                                 </div>
-                                                <div className="col text-end">
-                                                    <div class="dropdown">
-                                                        <button class="btn dropdown-toggle btn-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            {/* <BsThreeDotsVertical /> */}
-                                                        </button>
-                                                        <ul class="dropdown-menu dropdown-menu-light ps-2 border-light">
-                                                            <li>Update</li>
-                                                            <li>Delelte</li>
-                                                        </ul>
-                                                    </div>
+                                                <div className="row text-end">
+
+                                                    <p className='mt-2' style={{ textAlign: 'justify' }}>
+                                                        {todo.description}
+                                                    </p>
 
                                                 </div>
                                             </div>
-                                            <p className='mt-2' style={{ textAlign: 'justify' }}>
-                                                {todo.description}
-                                            </p>
+                                            <div className='row'>
+                                                <div className="col mb-1 text-center fw-bold">
+                                                    {todo.date}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

@@ -8,6 +8,7 @@ import Today from './Today'
 import StickyWall from './StickyWall'
 import Calendar from './Calendar'
 import ListedTodo from './ListedTodo/ListedTodo'
+import Deleted from './Deleted/Deleted'
 
 export default function Index() {
     return (
@@ -21,7 +22,8 @@ export default function Index() {
                             <Route path='upcoming' element={<UpComing />} />
                             <Route path='calendar' element={<Calendar />} />
                             <Route path='stickywall' element={<StickyWall />} />
-                            <Route path='list/:list' element={<ListedTodo />} />
+                            <Route path='deleted' element={<Deleted />} />
+                            <Route path='list/:id' element={<ListedTodo />} />
                             <Route path="*" element={<h1>404</h1>} />
                         </Routes>
 
