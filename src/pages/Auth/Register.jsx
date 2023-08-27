@@ -67,13 +67,38 @@ export default function Register() {
               <Divider />
 
               <Form layout="vertical">
-                <Form.Item label="Full Name">
+                <Form.Item label="Full Name" name='fullName' hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your Full Name!',
+                  },
+                ]}
+                >
                   <Input placeholder='Input your full name' name='fullName' onChange={handleChange} />
                 </Form.Item>
-                <Form.Item label="Email">
+                <Form.Item label="Email" name='email' hasFeedback
+                 rules={[
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail !',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail !',
+                  },
+                ]}>
+                
                   <Input placeholder='Input your email' name='email' onChange={handleChange} />
                 </Form.Item>
-                <Form.Item label="Password">
+                <Form.Item label="Password" name='password' hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your Password!',
+                  },
+                ]}
+                >
                   <Input.Password placeholder='Input your password' name='password' onChange={handleChange} />
                 </Form.Item>
                 <Form.Item label="Birth Date">

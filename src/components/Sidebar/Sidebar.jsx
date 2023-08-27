@@ -168,7 +168,7 @@ export default function Sidebar() {
                 <ul className="nav nav-pills flex-column px-1" >
                   <li className="nav-item text-dark mb-3 ">
                     <Link to="/deleted" className="nav-link text-dark  text-decoration-none py-1">
-                      <AiFillDelete size={18} />
+                      <AiFillDelete size={18} className='text-danger' />
                       <span className='d-none d-sm-inline ms-2'>Recycle Bin</span>
                     </Link>
                   </li>

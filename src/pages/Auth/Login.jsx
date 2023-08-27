@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Button, Divider, Form, Input, Typography, message } from 'antd'
+import { Button, Checkbox, Divider, Form, Input, Typography, message } from 'antd'
 import { useAuthContext } from 'contexts/AuthContext'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from 'config/firebase'
+import { Link } from 'react-router-dom'
 
 const { Title } = Typography
 
@@ -68,8 +69,26 @@ export default function Login() {
                 >
                   <Input.Password placeholder='Input your password' name='password' onChange={handleChange} />
                 </Form.Item>
-
+                  <Form.Item name='remember' valuePropName="checked"
+                     rules={[
+                       {
+                         validator: (_, value) =>
+                         value ? Promise.resolve() : Promise.reject(new Error('Should accept Remember')),
+                        },
+                      ]}
+                      >
+                    <Checkbox >Remember me</Checkbox>
+                  </Form.Item>
                 <Button type='primary' htmlType='submit' className='w-100' loading={isProcessing} onClick={handleLogin}>Login</Button>
+                    {/* <p className='mt-2'>
+                    If you don't have an Account.
+                    <Link to="/auth/register" className='text-decoration-none text-info'>
+                   Register now !
+                    </Link>
+                    </p> */}
+                      <p className='mb-0 text-center mt-4'>
+                        &copy;2023. All Rights Reserved By <span className='fw-bold'>Zaman Ali</span>
+                      </p>
               </Form>
             </div>
           </div>
