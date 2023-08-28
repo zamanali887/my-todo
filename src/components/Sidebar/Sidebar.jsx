@@ -51,6 +51,9 @@ export default function Sidebar() {
     let { listItem, color } = state
 
     listItem = listItem.trim().toLocaleLowerCase();
+    if(listItem.length < 3){
+      return message.error("Please enter an Accurate list name")
+    }
 
     const data = {
       listItem,
@@ -125,12 +128,12 @@ export default function Sidebar() {
                   </li>
                 </ul>
                 <h6 className='mt-3 px-2' >List</h6>
-                <ul className="nav nav-pills flex-column px-1" >
+                <ul className="nav nav-pills flex-row px-1 overflow-y-scroll abc" style={{height:'35vh'}} >
                   {
                     getList.map((list) => {
                       return (
                         <>
-                          <li className="nav-item text-dark mb-1 ">
+                          <li className="nav-item text-dark  mb-1 w-100">
                             <Link to={`/list/${list.id}`} className="nav-link text-dark  text-decoration-none py-1">
                               <BiSolidCheckbox size={22} style={{ color: list.color }} />
                               <span className='d-none d-sm-inline ms-2' style={{ textTransform: 'capitalize' }}>{list.listItem}</span>
